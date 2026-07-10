@@ -32,8 +32,7 @@ var showLoading = function (selector) {
 
 var insertProperty = function (string, propName, propValue) {
   var propToReplace = "{{" + propName + "}}";
-  string = string
-    .replace(new RegExp(propToReplace, "g"), propValue);
+  string = string.replace(new RegExp(propToReplace, "g"), propValue);
   return string;
 };
 
@@ -50,57 +49,53 @@ var switchMenuToActive = function () {
 };
 
 document.addEventListener("DOMContentLoaded", function (event) {
-
-showLoading("#main-content");
-$ajaxUtils.sendGetRequest(
-  allCategoriesUrl,
-  buildAndShowHomeHTML,
-  true); 
+  showLoading("#main-content");
+  $ajaxUtils.sendGetRequest(
+    allCategoriesUrl,
+    buildAndShowHomeHTML,
+    true
+  ); 
 });
 
-
 function buildAndShowHomeHTML (categories) {
-
   $ajaxUtils.sendGetRequest(
     homeHtmlUrl,
     function (homeHtml) {
-      var chosenCategoryObj = chooseRandamCategorey(categories);
-        var chosenCategoryShortName = chooseRandomCategory(categories).short_name;
-        var homeHtmlToInsertIntoMainPage =
-                insertProperty(
-                    homeHtml,
-                    "randomCategoryShortName",
-                    "'" + chosenCategoryShortName + "'"
-                );
+      var chosenCategoryShortName = chooseRandomCategory(categories).short_name;
+      var homeHtmlToInsertIntoMainPage = insertProperty(
+        homeHtml,
+        "randomCategoryShortName",
+        "'" + chosenCategoryShortName + "'"
+      );
         
       insertHtml("#main-content", homeHtmlToInsertIntoMainPage);
     },
-    false); 
+    false
+  ); 
 }
-
 
 function chooseRandomCategory (categories) {
   var randomArrayIndex = Math.floor(Math.random() * categories.length);
-
   return categories[randomArrayIndex];
 }
-
 
 dc.loadMenuCategories = function () {
   showLoading("#main-content");
   $ajaxUtils.sendGetRequest(
     allCategoriesUrl,
-    buildAndShowCategoriesHTML);
+    buildAndShowCategoriesHTML,
+    true
+  );
 };
-
 
 dc.loadMenuItems = function (categoryShort) {
   showLoading("#main-content");
   $ajaxUtils.sendGetRequest(
     menuItemsUrl + categoryShort + ".json",
-    buildAndShowMenuItemsHTML);
+    buildAndShowMenuItemsHTML,
+    true
+  );
 };
-
 
 function buildAndShowCategoriesHTML (categories) {
   $ajaxUtils.sendGetRequest(
@@ -110,37 +105,30 @@ function buildAndShowCategoriesHTML (categories) {
         categoryHtml,
         function (categoryHtml) {
           switchMenuToActive();
-
-          var categoriesViewHtml =
-            buildCategoriesViewHtml(categories,
-                                    categoriesTitleHtml,
-                                    categoryHtml);
+          var categoriesViewHtml = buildCategoriesViewHtml(
+            categories,
+            categoriesTitleHtml,
+            categoryHtml
+          );
           insertHtml("#main-content", categoriesViewHtml);
         },
-        false);
+        false
+      );
     },
-    false);
+    false
+  );
 }
 
-
-function buildCategoriesViewHtml(categories,
-                                 categoriesTitleHtml,
-                                 categoryHtml) {
-
+function buildCategoriesViewHtml(categories, categoriesTitleHtml, categoryHtml) {
   var finalHtml = categoriesTitleHtml;
   finalHtml += "<section class='row'>";
 
   for (var i = 0; i < categories.length; i++) {
-    // Insert category values
     var html = categoryHtml;
     var name = "" + categories[i].name;
     var short_name = categories[i].short_name;
-    html =
-      insertProperty(html, "name", name);
-    html =
-      insertProperty(html,
-                     "short_name",
-                     short_name);
+    html = insertProperty(html, "name", name);
+    html = insertProperty(html, "short_name", short_name);
     finalHtml += html;
   }
 
@@ -156,30 +144,31 @@ function buildAndShowMenuItemsHTML (categoryMenuItems) {
         menuItemHtml,
         function (menuItemHtml) {
           switchMenuToActive();
-
-          var menuItemsViewHtml =
-            buildMenuItemsViewHtml(categoryMenuItems,
-                                   menuItemsTitleHtml,
-                                   menuItemHtml);
+          var menuItemsViewHtml = buildMenuItemsViewHtml(
+            categoryMenuItems,
+            menuItemsTitleHtml,
+            menuItemHtml
+          );
           insertHtml("#main-content", menuItemsViewHtml);
         },
-        false);
+        false
+      );
     },
-    false);
+    false
+  );
 }
 
-function buildMenuItemsViewHtml(categoryMenuItems,
-                                menuItemsTitleHtml,
-                                menuItemHtml) {
-
-  menuItemsTitleHtml =
-    insertProperty(menuItemsTitleHtml,
-                   "name",
-                   categoryMenuItems.category.name);
-  menuItemsTitleHtml =
-    insertProperty(menuItemsTitleHtml,
-                   "special_instructions",
-                   categoryMenuItems.category.special_instructions);
+function buildMenuItemsViewHtml(categoryMenuItems, menuItemsTitleHtml, menuItemHtml) {
+  menuItemsTitleHtml = insertProperty(
+    menuItemsTitleHtml,
+    "name",
+    categoryMenuItems.category.name
+  );
+  menuItemsTitleHtml = insertProperty(
+    menuItemsTitleHtml,
+    "special_instructions",
+    categoryMenuItems.category.special_instructions
+  );
 
   var finalHtml = menuItemsTitleHtml;
   finalHtml += "<section class='row'>";
@@ -188,40 +177,17 @@ function buildMenuItemsViewHtml(categoryMenuItems,
   var catShortName = categoryMenuItems.category.short_name;
   for (var i = 0; i < menuItems.length; i++) {
     var html = menuItemHtml;
-    html =
-      insertProperty(html, "short_name", menuItems[i].short_name);
-    html =
-      insertProperty(html,
-                     "catShortName",
-                     catShortName);
-    html =
-      insertItemPrice(html,
-                      "price_small",
-                      menuItems[i].price_small);
-    html =
-      insertItemPortionName(html,
-                            "small_portion_name",
-                            menuItems[i].small_portion_name);
-    html =
-      insertItemPrice(html,
-                      "price_large",
-                      menuItems[i].price_large);
-    html =
-      insertItemPortionName(html,
-                            "large_portion_name",
-                            menuItems[i].large_portion_name);
-    html =
-      insertProperty(html,
-                     "name",
-                     menuItems[i].name);
-    html =
-      insertProperty(html,
-                     "description",
-                     menuItems[i].description);
+    html = insertProperty(html, "short_name", menuItems[i].short_name);
+    html = insertProperty(html, "catShortName", catShortName);
+    html = insertItemPrice(html, "price_small", menuItems[i].price_small);
+    html = insertItemPortionName(html, "small_portion_name", menuItems[i].small_portion_name);
+    html = insertItemPrice(html, "price_large", menuItems[i].price_large);
+    html = insertItemPortionName(html, "large_portion_name", menuItems[i].large_portion_name);
+    html = insertProperty(html, "name", menuItems[i].name);
+    html = insertProperty(html, "description", menuItems[i].description);
 
     if (i % 2 !== 0) {
-      html +=
-        "<div class='clearfix visible-lg-block visible-md-block'></div>";
+      html += "<div class='clearfix visible-lg-block visible-md-block'></div>";
     }
 
     finalHtml += html;
@@ -231,25 +197,19 @@ function buildMenuItemsViewHtml(categoryMenuItems,
   return finalHtml;
 }
 
-function insertItemPrice(html,
-                         pricePropName,
-                         priceValue) {
+function insertItemPrice(html, pricePropName, priceValue) {
   if (!priceValue) {
     return insertProperty(html, pricePropName, "");
   }
-
   priceValue = "$" + priceValue.toFixed(2);
   html = insertProperty(html, pricePropName, priceValue);
   return html;
 }
 
-function insertItemPortionName(html,
-                               portionPropName,
-                               portionValue) {
+function insertItemPortionName(html, portionPropName, portionValue) {
   if (!portionValue) {
     return insertProperty(html, portionPropName, "");
   }
-
   portionValue = "(" + portionValue + ")";
   html = insertProperty(html, portionPropName, portionValue);
   return html;
