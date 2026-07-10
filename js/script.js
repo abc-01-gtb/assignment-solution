@@ -1,5 +1,4 @@
 $(function () { 
-
   $("#navbarToggle").blur(function (event) {
     var screenWidth = window.innerWidth;
     if (screenWidth < 768) {
@@ -71,7 +70,7 @@ function buildAndShowHomeHTML (categories) {
                 insertProperty(
                     homeHtml,
                     "randomCategoryShortName",
-                    "\" + chosenCategoryShortName + "\"
+                    "'" + chosenCategoryShortName + "'"
                 );
         
       insertHtml("#main-content", homeHtmlToInsertIntoMainPage);
